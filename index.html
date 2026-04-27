@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AlgoViz — Sorting Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Ambient background layers -->
+  <div class="ambient" aria-hidden="true">
+    <div class="ambient__orb ambient__orb--1"></div>
+    <div class="ambient__orb ambient__orb--2"></div>
+    <div class="ambient__orb ambient__orb--3"></div>
+    <div class="ambient__grid"></div>
+  </div>
+
+  <!-- ══════════════════ APP SHELL ══════════════════ -->
+  <div class="app">
+
+    <!-- ── LEFT SIDEBAR ── -->
+    <aside class="sidebar" id="sidebar">
+
+      <!-- Brand -->
+      <div class="sidebar__brand">
+        <div class="brand__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="14" width="4" height="8" rx="1" fill="currentColor" opacity=".5"/>
+            <rect x="8" y="9"  width="4" height="13" rx="1" fill="currentColor" opacity=".7"/>
+            <rect x="14" y="4" width="4" height="18" rx="1" fill="currentColor"/>
+            <rect x="20" y="11" width="4" height="11" rx="1" fill="currentColor" opacity=".6"/>
+          </svg>
+        </div>
+        <div class="brand__text">
+          <span class="brand__name">AlgoViz</span>
+          <span class="brand__tagline">Sorting Lab</span>
+        </div>
+      </div>
+
+      <!-- Section label -->
+      <div class="sidebar__section-label">Algorithms</div>
+
+      <!-- Algorithm nav list -->
+      <nav class="algo-nav" id="algo-nav">
+
+        <button class="algo-nav__item active" data-algo="bubble">
+          <div class="algo-nav__indicator"></div>
+          <div class="algo-nav__content">
+            <span class="algo-nav__name">Bubble Sort</span>
+            <span class="algo-nav__complexity">O(n²)</span>
+          </div>
+          <div class="algo-nav__arrow">›</div>
+        </button>
+
+        <button class="algo-nav__item" data-algo="selection">
+          <div class="algo-nav__indicator"></div>
+          <div class="algo-nav__content">
+            <span class="algo-nav__name">Selection Sort</span>
+            <span class="algo-nav__complexity">O(n²)</span>
+          </div>
+          <div class="algo-nav__arrow">›</div>
+        </button>
+
+        <button class="algo-nav__item" data-algo="insertion">
+          <div class="algo-nav__indicator"></div>
+          <div class="algo-nav__content">
+            <span class="algo-nav__name">Insertion Sort</span>
+            <span class="algo-nav__complexity">O(n²)</span>
+          </div>
+          <div class="algo-nav__arrow">›</div>
+        </button>
+
+      </nav>
+
+      <!-- Sidebar divider -->
+      <div class="sidebar__divider"></div>
+      <div class="sidebar__section-label">Legend</div>
+
+      <!-- Color legend -->
+      <div class="legend">
+        <div class="legend__item">
+          <span class="legend__dot legend__dot--default"></span>
+          <span class="legend__label">Unsorted</span>
+        </div>
+        <div class="legend__item">
+          <span class="legend__dot legend__dot--comparing"></span>
+          <span class="legend__label">Comparing</span>
+        </div>
+        <div class="legend__item">
+          <span class="legend__dot legend__dot--swapping"></span>
+          <span class="legend__label">Swapping</span>
+        </div>
+        <div class="legend__item">
+          <span class="legend__dot legend__dot--pivot"></span>
+          <span class="legend__label">Pivot / Min</span>
+        </div>
+        <div class="legend__item">
+          <span class="legend__dot legend__dot--sorted"></span>
+          <span class="legend__label">Sorted</span>
+        </div>
+      </div>
+
+      <!-- Sidebar footer -->
+      <div class="sidebar__footer">
+        <span>Built with Vanilla JS</span>
+      </div>
+
+    </aside>
+
+    <!-- Mobile sidebar toggle -->
+    <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- ── MAIN PANEL ── -->
+    <main class="main" id="main">
+
+      <!-- ── TOP CONTROL BAR ── -->
+      <header class="topbar">
+
+        <!-- Left: page title + status -->
+        <div class="topbar__left">
+          <h1 class="topbar__title" id="topbar-title">Bubble Sort</h1>
+          <div class="status-badge" id="status-badge">
+            <span class="status-badge__dot"></span>
+            <span class="status-badge__text" id="status-text">Ready</span>
+          </div>
+        </div>
+
+        <!-- Center: stats -->
+        <div class="topbar__stats">
+          <div class="stat-chip">
+            <span class="stat-chip__label">Comparisons</span>
+            <span class="stat-chip__value" id="stat-comparisons">0</span>
+          </div>
+          <div class="stat-chip">
+            <span class="stat-chip__label">Swaps</span>
+            <span class="stat-chip__value" id="stat-swaps">0</span>
+          </div>
+          <div class="stat-chip">
+            <span class="stat-chip__label">Array Size</span>
+            <span class="stat-chip__value" id="stat-size">40</span>
+          </div>
+        </div>
+
+        <!-- Right: action buttons -->
+        <div class="topbar__actions">
+          <button class="btn btn--ghost" id="btn-generate" title="Generate new random array">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+              <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+            </svg>
+            New Array
+          </button>
+          <button class="btn btn--primary" id="btn-sort" title="Start sorting">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            Sort
+          </button>
+          <button class="btn btn--danger" id="btn-stop" disabled title="Stop sorting">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+            </svg>
+            Stop
+          </button>
+        </div>
+
+      </header>
+
+      <!-- ── SLIDER CONTROLS ── -->
+      <div class="controls-strip">
+
+        <div class="slider-group">
+          <label class="slider-group__label" for="speed-slider">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+            Speed
+          </label>
+          <div class="slider-track">
+            <input type="range" id="speed-slider" class="range-input" min="1" max="10" value="5" />
+          </div>
+          <span class="slider-val" id="speed-val">5</span>
+        </div>
+
+        <div class="slider-divider"></div>
+
+        <div class="slider-group">
+          <label class="slider-group__label" for="size-slider">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+              <line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/>
+              <line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+            </svg>
+            Array Size
+          </label>
+          <div class="slider-track">
+            <input type="range" id="size-slider" class="range-input" min="8" max="80" value="40" />
+          </div>
+          <span class="slider-val" id="size-val">40</span>
+        </div>
+
+      </div>
+
+      <!-- ── VISUALIZATION AREA ── -->
+      <section class="viz-panel">
+        <div class="viz-panel__header">
+          <span class="viz-panel__label">Visualization</span>
+          <span class="viz-panel__hint" id="viz-hint">Press Sort to begin</span>
+        </div>
+        <div class="viz-canvas" id="viz-canvas">
+          <!-- Bars injected here by JS -->
+        </div>
+      </section>
+
+      <!-- ── INFO PANEL ── -->
+      <section class="info-panel" id="info-panel">
+
+        <div class="info-card info-card--desc">
+          <div class="info-card__label">About this Algorithm</div>
+          <h2 class="info-card__title" id="info-name">Bubble Sort</h2>
+          <p class="info-card__text" id="info-desc">
+            Bubble Sort compares adjacent elements and swaps them if they're in the wrong order.
+            The largest unsorted element "bubbles up" to its correct position on each pass.
+          </p>
+        </div>
+
+        <div class="info-card info-card--complexity">
+          <div class="info-card__label">Time Complexity</div>
+          <div class="complexity-grid">
+            <div class="complexity-item">
+              <span class="complexity-item__case">Best</span>
+              <span class="complexity-item__value complexity-item__value--good" id="tc-best">O(n)</span>
+            </div>
+            <div class="complexity-item">
+              <span class="complexity-item__case">Average</span>
+              <span class="complexity-item__value complexity-item__value--mid" id="tc-avg">O(n²)</span>
+            </div>
+            <div class="complexity-item">
+              <span class="complexity-item__case">Worst</span>
+              <span class="complexity-item__value complexity-item__value--bad" id="tc-worst">O(n²)</span>
+            </div>
+            <div class="complexity-item">
+              <span class="complexity-item__case">Space</span>
+              <span class="complexity-item__value complexity-item__value--space" id="tc-space">O(1)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card info-card--props">
+          <div class="info-card__label">Properties</div>
+          <div class="props-list" id="props-list">
+            <div class="prop-tag prop-tag--yes">Stable</div>
+            <div class="prop-tag prop-tag--yes">In-Place</div>
+            <div class="prop-tag prop-tag--no">Not Adaptive</div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div><!-- /app -->
+
+  <script src="script.js"></script>
+</body>
+</html>
